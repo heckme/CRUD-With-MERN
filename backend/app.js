@@ -7,9 +7,9 @@ var app = express();
 const dbs = database.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'usbw',
-    database: 'produk',
-    port: '3307'
+    password: '',
+    database: 'wisemonkey',
+    port: '3306'
 });
 dbs.connect();
 
@@ -22,15 +22,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', (req, res) => {
-    var panggilData = 'SELECT * FROM  tas';
+    var panggilData = 'SELECT * FROM  produk_samid';
     dbs.query(panggilData, (kaloError, hasilQuery) => {
-        if(kaloError){
+        if(kaloError)
+        {
             throw kaloError;
-        } else {
+        } 
+        else 
+        {
             res.send(hasilQuery);
         }
     });
-    
 });
 
 app.post('/tambahData', (req, res) => {
@@ -46,6 +48,37 @@ app.post('/tambahData', (req, res) => {
     });
 });
 
+/** Untuk mengambil data per baris */
+app.get('/getdata/:id', (req, res) => {
+    /** Menyiapkan query untuk ke MySQL */
+    var grabData = `SELECT * FROM produk_samid WHERE id = ${req.params.id}`;
+    /** Mengeksekusi query dengan syntax nodeJS */
+    dbs.query(grabData, (err, hasilquery) => {
+        if(err){
+            /** Mengeluarkan pesan error apabila terjadi kesalahan */
+            throw err;
+        } else {
+            /** Menyiapkan hasil query untuk siap dikirim */
+            res.send(hasilquery);
+        }
+    })
+});
+
+/** Untuk mengupdate data */
+app.post('/ubahData', (req, res) => {
+    var id = req.body.id;
+    var namaProduk = req.body.namaproduk;
+    var hargaProduk = req.body.harga;
+    var queryUpdate = `UPDATE produk_samid SET nama_produk = "${namaProduk}", 
+                        harga = "${hargaProduk}" WHERE id="${id}"`;
+    dbs.query(queryUpdate, (err, result) => {
+        if(err){
+            throw err;
+        } else {
+            res.send('Update berhasil !');
+        }
+    });
+});
 
 app.listen(port, () => {
     console.log('Server berjalan di port '+port+' ....')
