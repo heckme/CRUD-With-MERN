@@ -6,6 +6,7 @@ class FormEdit extends Component {
       id: '',
       namaproduk: '',
       harga: '',
+      foto: '',
   }
   componentDidMount(){
       var id = this.props.location.state.produkID;
@@ -21,17 +22,42 @@ class FormEdit extends Component {
       }
       );
   }
-  updateData = (e) => {
-    axios.post('http://localhost:8002/ubahData/', {
+  onchange = (e) => {
+    switch(e.target.name){
+        case 'fotoproduk':
+            this.setState({
+                foto: e.target.files[0],
+            });
+            break;
+    }
+  }
+  value = (e) => {
+    this.setState({
         id: e.idproduk.value,
         namaproduk: e.namaproduk.value,
-        harga: e.hargaproduk.value
-    });
+        hargaproduk: e.hargaproduk.value
+    })
+  }
+  updateData = (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append('file', this.state.foto);
+    formData.append('id', this.state.id);
+    formData.append('namaproduk', this.state.namaproduk);
+    formData.append('harga', this.state.hargaproduk);
+
+    // axios.post('http://localhost:8002/ubahData/', {
+    //     id: e.idproduk.value,
+    //     namaproduk: e.namaproduk.value,
+    //     harga: e.hargaproduk.value,
+    //     foto_produk: e.fotoproduk.value
+    // });
+    axios.post('http://localhost:8002/ubahData/', formData);
   }
   render() {
     return (
         <div className="container">
-            <form className="form-horizontal">
+            <form className="form-horizontal" onSubmit={this.updateData} encType="multipart/form-data">
                 <fieldset>
                     <legend>Edit Data</legend>
                     <input type="hidden" className="form-control" ref="idproduk" defaultValue={this.state.id}/>
@@ -50,9 +76,17 @@ class FormEdit extends Component {
                     </div>
 
                     <div className="form-group">
+                        <label className="col-lg-2 control-label">Foto Produk</label>
+                        <div className="col-lg-10">
+                            <input ref="fotoproduk" name="fotoproduk" onChange={this.onchange} type="file" className="form-control"  />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
                         <div className="col-lg-10 col-lg-offset-2">
                             <button type="reset" className="btn btn-warning"><i className="fa fa-remove"></i> Cancel</button>&nbsp;
-                            <button type="button" onClick={() => this.updateData(this.refs)} className="btn btn-primary"><i className="fa fa-paper-plane"></i> Submit</button>
+                            <button type="submit" onClick={() => this.value(this.refs)} className="btn btn-primary"><i className="fa fa-paper-plane"></i> Submit</button>
+                            {/* <button type="button" onClick={() => this.updateData(this.refs)} className="btn btn-primary"><i className="fa fa-paper-plane"></i> Submit</button> */}
                         </div>
                     </div>
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const database = require('mysql');
+const upload = require('express-fileupload');
 var koneksi = require('cors');
 var app = express();
 
@@ -17,6 +18,7 @@ dbs.connect();
 var port = 8002;
 
 app.use(koneksi());
+app.use(upload());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -69,8 +71,21 @@ app.post('/ubahData', (req, res) => {
     var id = req.body.id;
     var namaProduk = req.body.namaproduk;
     var hargaProduk = req.body.harga;
+    var fileName = req.files.file.name;
+
+    if(req.files){
+        var fungsiFile = req.files.file;
+        fungsiFile.mv("./tampunganFile/"+fileName, (kaloError) => {
+            if(kaloError){
+                console.log(kaloError);
+                res.send('Upload failed');
+            } else {
+                res.send('Upload berhasil');
+            }
+        })
+    }
     var queryUpdate = `UPDATE produk_samid SET nama_produk = "${namaProduk}", 
-                        harga = "${hargaProduk}" WHERE id="${id}"`;
+                        harga = "${hargaProduk}", foto_produk = "${fileName}" WHERE id="${id}"`;
     dbs.query(queryUpdate, (err, result) => {
         if(err){
             throw err;
