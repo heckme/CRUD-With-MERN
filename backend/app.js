@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const database = require('mysql');
 const upload = require('express-fileupload');
+const crypto = require('crypto');
 var koneksi = require('cors');
 var app = express();
 
@@ -98,6 +99,28 @@ app.post('/ubahData', (req, res) => {
         }
     });
 
+});
+
+app.post('/login', (req, res) => {
+    var sql = `SELECT * FROM newusers`;
+    dbs.query(sql, (error, result) => {
+        if(error) {
+            throw error;
+        } else {
+            var username = req.body.username;
+            var password = req.body.password;
+            
+            for(var i=0; i < result.length; i++ ){
+                if(username === result[i].Username && password === result[i].Password){
+                    var status = 'oke';
+                    res.send(status);
+                    break;
+                } else if(i === result.length - 1) {
+                    res.send('gagal');
+                }
+            }
+        }
+    });
 });
 
 app.listen(port, () => {

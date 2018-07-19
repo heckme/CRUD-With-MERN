@@ -18,7 +18,7 @@ class Navbar extends Component {
             </div>
             <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
               <ul className="nav navbar-nav">
-                <li className="active"><a href="#">Link <span className="sr-only">(current)</span></a></li>
+                <li className="active"><Link to="/login">Logout <span className="sr-only">(current)</span></Link></li>
                 <li><a href="#">Link</a></li>
                 <li className="dropdown">
                   <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span className="caret" /></a>
