@@ -8,9 +8,11 @@ class FormEdit extends Component {
       harga: '',
       foto: '',
   }
+
+//   Untuk munculin data yang mengandung id yg ditujuh di database
   componentDidMount(){
-      var id = this.props.location.state.produkID;
-      axios.get('http://localhost:8002/getdata/'+id).then(
+      var id_sblm = this.props.location.state.produkID;
+      axios.get('http://localhost:8002/getdata/'+id_sblm).then(
           (hasilAmbil) => {
           console.log(hasilAmbil.data);
           this.setState({
@@ -22,6 +24,8 @@ class FormEdit extends Component {
       }
       );
   }
+
+//   Di bagian input file (jika terjadi perubahan maka akan dijalankan fungsi "onchange")
   onchange = (e) => {
     switch(e.target.name){
         case 'fotoproduk':
@@ -31,6 +35,7 @@ class FormEdit extends Component {
             break;
     }
   }
+  
   value = (e) => {
     this.setState({
         id: e.idproduk.value,
@@ -38,6 +43,8 @@ class FormEdit extends Component {
         hargaproduk: e.hargaproduk.value
     })
   }
+
+
   updateData = (e) => {
     e.preventDefault();
     let formData = new FormData();
@@ -78,7 +85,7 @@ class FormEdit extends Component {
                     <div className="form-group">
                         <label className="col-lg-2 control-label">Foto Produk</label>
                         <div className="col-lg-10">
-                            <input ref="fotoproduk" name="fotoproduk" onChange={this.onchange} type="file" className="form-control"  />
+                            <input name="fotoproduk" onChange={this.onchange} type="file" className="form-control"  />
                         </div>
                     </div>
 

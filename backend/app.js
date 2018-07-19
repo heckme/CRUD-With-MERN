@@ -73,8 +73,11 @@ app.post('/ubahData', (req, res) => {
     var hargaProduk = req.body.harga;
     var fileName = req.files.file.name;
 
+// Ketika dapat kiriman yang berbentuk files maka akan dijalankan fungsi ini
     if(req.files){
+        
         var fungsiFile = req.files.file;
+
         fungsiFile.mv("./tampunganFile/"+fileName, (kaloError) => {
             if(kaloError){
                 console.log(kaloError);
@@ -84,6 +87,7 @@ app.post('/ubahData', (req, res) => {
             }
         })
     }
+
     var queryUpdate = `UPDATE produk_samid SET nama_produk = "${namaProduk}", 
                         harga = "${hargaProduk}", foto_produk = "${fileName}" WHERE id="${id}"`;
     dbs.query(queryUpdate, (err, result) => {
@@ -93,6 +97,7 @@ app.post('/ubahData', (req, res) => {
             res.send('Update berhasil !');
         }
     });
+
 });
 
 app.listen(port, () => {
